@@ -46,6 +46,7 @@ public class BundleExtractor : MonoBehaviour
             StartCoroutine(loadStreamUsingWWW(Application.streamingAssetsPath+"/iPhone/Raw/"));
         }else if(RuntimePlatform.OSXEditor == Application.platform || RuntimePlatform.WindowsEditor == Application.platform)
         {
+            Directory.CreateDirectory (LMVersion.ASSET_BUNDLE_PATH+"/Pc");
             StartCoroutine(loadStreamUsingFile(Application.streamingAssetsPath+"/Pc/"));
         }
 
@@ -63,9 +64,17 @@ public class BundleExtractor : MonoBehaviour
             }
             Debug.Log(fname);
             string[] content=fname.Split(',');
-            if(content[0].Length>0 && content[1].Length>0 && content[2].Length>0)
+            string bundleName=content[0];
+            string bundleMd5=content[1];
+            string bundleSize=content[2];
+            if(bundleName.Length>0 &&bundleMd5 .Length>0 && bundleSize.Length>0)
             {
-                Debug.Log(content[0]+":"+content[1]);
+                Debug.Log(bundleName+":"+bundleMd5+":"+bundleSize);
+                byte[] bytes=File.ReadAllBytes(txtpath+bundleName);
+                if(bundleName.Contains(".assetbundle"))
+                {
+                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+bundleName,bytes);
+                }
             }
 
         }
