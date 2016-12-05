@@ -24,9 +24,16 @@ public class BundleExtractor : MonoBehaviour
         OnItemLoaded = onloaded;
         if (!Directory.Exists (LMVersion.ASSET_BUNDLE_PATH)) {
             Directory.CreateDirectory (LMVersion.ASSET_BUNDLE_PATH);
-            CopyToCache ();
+            //CopyToCache ();
         }
         CopyToCache ();
+    }
+    private void callBack()
+    {
+        if(OnItemLoaded != null)
+        {
+            OnItemLoaded();
+        }
     }
 
     /// <summary>
@@ -63,7 +70,7 @@ public class BundleExtractor : MonoBehaviour
                 continue;
             }
             Debug.Log(fname);
-            string[] content=fname.Split(',');
+            string[] content=fname.Split('_');
             string bundleName=content[0];
             string bundleMd5=content[1];
             string bundleSize=content[2];
@@ -74,11 +81,18 @@ public class BundleExtractor : MonoBehaviour
                 if(bundleName.Contains(".assetbundle"))
                 {
                     File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+bundleName,bytes);
+                }else{
+
+                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+bundleName,bytes);
                 }
+            }else{
+                Debug.Log("错误的本地Cache数据"+fname);
             }
+            yield return new WaitForEndOfFrame();
 
         }
         yield return new WaitForEndOfFrame(); 
+        callBack();
     }
     private IEnumerator loadStreamUsingWWW (string txtpath)
     {

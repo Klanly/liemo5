@@ -41,11 +41,11 @@ public class Intro : MonoBehaviour
         slider.value = (float)0.8; 
         GoRequestXML();
     }
-	
+
     // Update is called once per frame
     void Update()
     {
-	    
+
     }
 
     private void GoRequestXML()
@@ -95,8 +95,10 @@ public class Intro : MonoBehaviour
             if (versionCode[0].Equals(newversionCode[0]) && versionCode[1].Equals(newversionCode[1]))
             {
                 bundleExtractor.StartLoading(OnCopyToCacheEnd);
+            }else
+            {
+                bundleExtractor.StartLoading(OnCopyToCacheEnd);
             }
-            bundleExtractor.StartLoading(OnCopyToCacheEnd);
         }  
         StopCoroutine("check_update");   
 
@@ -110,6 +112,21 @@ public class Intro : MonoBehaviour
 
     private IEnumerator HashCodeLoad()
     {
-        yield return null;
+        List<string> loadList= new List<string>();
+        Debug.Log("copyFileEnd !!!!");
+        WWW versionLoader = new WWW(URLAntiCacheRandomizer.RandomURL( Baseurl+"/v.txt"));
+        yield return versionLoader;
+        if(versionLoader.error==null && versionLoader.isDone)
+        {
+            string[] result = versionLoader.text.Split('\n');
+            foreach(string line in result)
+            {
+                if(line.Length>0)
+                {
+                    loadList.Add(line);
+                }
+            } 
+            BundleManager.getIns().TotalBytesToload(loadList);
+        }
     }
 }
