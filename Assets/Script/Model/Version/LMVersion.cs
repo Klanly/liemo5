@@ -7,13 +7,15 @@ using System.Text;
 
 public  static class LMVersion
 {
-    public static string ASSET_BUNDLE_PATH = Application.persistentDataPath;
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+    public static string Version_PATH = ASSET_BUNDLE_PATH + "/PC/Version.txt";
+    public static string ASSET_BUNDLE_PATH = Application.persistentDataPath+"/Pc/";
+#elif UNITY_ANDROID
     public static string Version_PATH = ASSET_BUNDLE_PATH + "/Android/Version.txt";
+    public static string ASSET_BUNDLE_PATH = Application.persistentDataPath+"/Android/";
 #elif UNITY_IPHONE
     public static string Version_PATH = ASSET_BUNDLE_PATH + "/iPhone/Version.txt";
-#elif UNITY_EDITOR
-    public static string Version_PATH = ASSET_BUNDLE_PATH + "/PC/Version.txt";
+    public static string ASSET_BUNDLE_PATH = Application.persistentDataPath+"/iPhone/";
 #endif
 
 

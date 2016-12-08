@@ -70,20 +70,21 @@ public class BundleExtractor : MonoBehaviour
                 continue;
             }
             Debug.Log(fname);
-            string[] content=fname.Split('_');
-            string bundleName=content[0];
-            string bundleMd5=content[1];
-            string bundleSize=content[2];
-            if(bundleName.Length>0 &&bundleMd5 .Length>0 && bundleSize.Length>0)
+            
+            string bundleName=string.Empty;
+            int underLineIndex = fname.LastIndexOf('_');
+            if(underLineIndex!=-1){
+                bundleName=fname.Substring(0,underLineIndex);
+            }
+            if(bundleName.Length>0)
             {
-                Debug.Log(bundleName+":"+bundleMd5+":"+bundleSize);
                 byte[] bytes=File.ReadAllBytes(txtpath+bundleName);
                 if(bundleName.Contains(".assetbundle"))
                 {
-                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+bundleName,bytes);
+                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+fname,bytes);
                 }else{
 
-                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+bundleName,bytes);
+                    File.WriteAllBytes(Application.persistentDataPath+"/Pc/"+fname,bytes);
                 }
             }else{
                 Debug.Log("错误的本地Cache数据"+fname);

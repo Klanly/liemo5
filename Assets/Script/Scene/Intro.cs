@@ -21,18 +21,21 @@ public class Intro : MonoBehaviour
     private WWW xmlLoader;
     public UnityEngine.UI.Text label;
     public Texture2D[] CurBGs;
-    public string[] versionCode;
-    public string[] newversionCode;
+    private string[] versionCode;
+    private string[] newversionCode;
     public string Baseurl = string.Empty;
     public string QiangGengAddress = string.Empty;
+    private int totalMtoLoad=0;
+    public GameObject NoticeUI;
 
     public delegate void OnItemLoadcomplete();
 
     public BundleExtractor bundleExtractor;
+    private List<string> loadList= new List<string>();
 
     void Awake()
     { 
-        ServerAddress = @"http://test.liemo.yongxinwan.xyz/liemo/liemo.xml";
+        ServerAddress = @"http://42.159.80.141/liemo/liemo.xml";
     }
 
     // Use this for initialization
@@ -105,6 +108,23 @@ public class Intro : MonoBehaviour
 
     }
 
+    public void OnclieckConfirmUpdate()
+    {
+        NoticeUI.SetActive(false);
+        StartCoroutine(BeginDownRes());
+    }
+
+    private IEnumerator BeginDownRes()
+    {
+        yield return new WaitForEndOfFrame();
+    #if HOT
+        BundleManager.getIns().SetLoadList(loadList);
+        BundleManager.getIns().StartLoadBundle();
+    #endif
+
+
+    }
+
     private void OnCopyToCacheEnd()
     {
         StartCoroutine(HashCodeLoad());
@@ -112,7 +132,6 @@ public class Intro : MonoBehaviour
 
     private IEnumerator HashCodeLoad()
     {
-        List<string> loadList= new List<string>();
         Debug.Log("copyFileEnd !!!!");
         WWW versionLoader = new WWW(URLAntiCacheRandomizer.RandomURL( Baseurl+"/v.txt"));
         yield return versionLoader;
@@ -126,7 +145,11 @@ public class Intro : MonoBehaviour
                     loadList.Add(line);
                 }
             } 
-            BundleManager.getIns().TotalBytesToload(loadList);
+            totalMtoLoad =  BundleManager.getIns().TotalBytesToload(loadList);
+            if(totalMtoLoad>0){
+                NoticeUI.SetActive(true);
+            }
         }
+        Debug.Log("totalMtoLoad="+totalMtoLoad);
     }
 }
