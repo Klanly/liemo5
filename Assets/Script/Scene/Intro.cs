@@ -23,25 +23,25 @@ public class Intro : MonoBehaviour
     public Texture2D[] CurBGs;
     private string[] versionCode;
     private string[] newversionCode;
-    public string Baseurl = string.Empty;
-    public string QiangGengAddress = string.Empty;
-    private int totalMtoLoad=0;
+    public static string Baseurl = string.Empty;
+    public static string QiangGengAddress = string.Empty;
+    private int totalMtoLoad = 0;
     public GameObject NoticeUI;
 
     public delegate void OnItemLoadcomplete();
 
     public BundleExtractor bundleExtractor;
-    private List<string> loadList= new List<string>();
+    private List<string> loadList = new List<string>();
 
     void Awake()
-    { 
+    {
         ServerAddress = @"http://42.159.80.141/liemo/liemo.xml";
     }
 
     // Use this for initialization
     void Start()
     {
-        slider.value = (float)0.8; 
+        slider.value = (float)0.8;
         GoRequestXML();
     }
 
@@ -98,12 +98,13 @@ public class Intro : MonoBehaviour
             if (versionCode[0].Equals(newversionCode[0]) && versionCode[1].Equals(newversionCode[1]))
             {
                 bundleExtractor.StartLoading(OnCopyToCacheEnd);
-            }else
+            }
+            else
             {
                 bundleExtractor.StartLoading(OnCopyToCacheEnd);
             }
-        }  
-        StopCoroutine("check_update");   
+        }
+        StopCoroutine("check_update");
 
 
     }
@@ -117,10 +118,10 @@ public class Intro : MonoBehaviour
     private IEnumerator BeginDownRes()
     {
         yield return new WaitForEndOfFrame();
-    #if HOT
+#if HOT
         BundleManager.getIns().SetLoadList(loadList);
         BundleManager.getIns().StartLoadBundle();
-    #endif
+#endif
 
 
     }
@@ -133,23 +134,24 @@ public class Intro : MonoBehaviour
     private IEnumerator HashCodeLoad()
     {
         Debug.Log("copyFileEnd !!!!");
-        WWW versionLoader = new WWW(URLAntiCacheRandomizer.RandomURL( Baseurl+"/v.txt"));
+        WWW versionLoader = new WWW(URLAntiCacheRandomizer.RandomURL(Baseurl + "/v.txt"));
         yield return versionLoader;
-        if(versionLoader.error==null && versionLoader.isDone)
+        if (versionLoader.error == null && versionLoader.isDone)
         {
             string[] result = versionLoader.text.Split('\n');
-            foreach(string line in result)
+            foreach (string line in result)
             {
-                if(line.Length>0)
+                if (line.Length > 0)
                 {
                     loadList.Add(line);
                 }
-            } 
-            totalMtoLoad =  BundleManager.getIns().TotalBytesToload(loadList);
-            if(totalMtoLoad>0){
+            }
+            totalMtoLoad = BundleManager.getIns().TotalBytesToload(loadList);
+            if (totalMtoLoad > 0)
+            {
                 NoticeUI.SetActive(true);
             }
         }
-        Debug.Log("totalMtoLoad="+totalMtoLoad);
+        Debug.Log("totalMtoLoad=" + totalMtoLoad);
     }
 }
