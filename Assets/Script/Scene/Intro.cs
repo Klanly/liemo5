@@ -112,10 +112,10 @@ public class Intro : MonoBehaviour
     public void OnclieckConfirmUpdate()
     {
         NoticeUI.SetActive(false);
-        StartCoroutine(BeginDownRes());
+        StartCoroutine(LoadNextScene());
     }
 
-    private IEnumerator BeginDownRes()
+    private IEnumerator LoadNextScene()
     {
         yield return new WaitForEndOfFrame();
 #if HOT
