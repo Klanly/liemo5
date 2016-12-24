@@ -13,6 +13,7 @@ using Mono.Xml;
 /// 2.3 配置文件解压
 /// 3 进入loading场景开始加载city资源
 
+using UnityEngine.SceneManagement;
 /// </summary>
 public class Intro : MonoBehaviour
 {
@@ -33,9 +34,11 @@ public class Intro : MonoBehaviour
     public BundleExtractor bundleExtractor;
     private List<string> loadList = new List<string>();
 
+	public AsyncOperation async;
+
     void Awake()
     {
-        ServerAddress = @"http://42.159.80.141/liemo/liemo.xml";
+        ServerAddress = @"http://192.168.1.150/liemo/liemo.xml";
     }
 
     // Use this for initialization
@@ -101,7 +104,8 @@ public class Intro : MonoBehaviour
             }
             else
             {
-                bundleExtractor.StartLoading(OnCopyToCacheEnd);
+				//bundleExtractor.StartLoading(OnCopyToCacheEnd);
+				Debug.Log("版本检查需要更新");
             }
         }
         StopCoroutine("check_update");
@@ -118,10 +122,15 @@ public class Intro : MonoBehaviour
     private IEnumerator LoadNextScene()
     {
         yield return new WaitForEndOfFrame();
-#if HOT
+        ResoureManager.getIns().Dispose();
+		async = SceneManager.LoadSceneAsync("Login");
+		async.allowSceneActivation = false;
+    #if HOT
         BundleManager.getIns().SetLoadList(loadList);
+        Debug.Log("LoadList=>"+loadList.Count);
         BundleManager.getIns().StartLoadBundle();
-#endif
+		yield return async;
+    #endif
 
 
     }
@@ -146,11 +155,17 @@ public class Intro : MonoBehaviour
                     loadList.Add(line);
                 }
             }
+            //这里只是把服务器的v.txt列表传入后，和本地文件对比，如果名字不同或者版本不同。就做为下载文件
             totalMtoLoad = BundleManager.getIns().TotalBytesToload(loadList);
-            if (totalMtoLoad > 0)
-            {
-                NoticeUI.SetActive(true);
-            }
+			if (totalMtoLoad > 0)
+			{
+				NoticeUI.SetActive(true);
+			}
+			else 
+            { 
+                Debug.Log("检查文件正常，进入下一个scene");
+		        StartCoroutine(LoadNextScene());	
+		    }
         }
         Debug.Log("totalMtoLoad=" + totalMtoLoad);
     }

@@ -93,17 +93,16 @@ public class BundleManager
 		string bundleSize = ver_size [1];
 		Debug.Log ("进入下载队列文件:" + bundleName + "|" + bundleVersion + "|" + bundleSize);
 		if (voManager.hasBundle (bundleName)) {
-			Debug.Log ("repeat download bundle" + bundleName);
+			Debug.Log ("已经下载和Addbundle的" + bundleName);
 			return;
 		}
-
-
 		BundleVo bundle = new BundleVo (nameWithVersion);
 		bundle.name = bundleName;
 		bundle.chunckSize = int.Parse (bundleSize);
 
 		if (filenameDict.ContainsKey (bundleName)) {
-			if (filenameDict [bundleName].Equals (bundleVersion)) {
+			if (filenameDict [bundleName].Equals (bundleVersion)) 
+			{
 				bundle.isLoadFromFile = true;
 			} else {
 				string filepath = LMVersion.ASSET_BUNDLE_PATH + "_" + filenameDict [bundleName];
@@ -114,6 +113,7 @@ public class BundleManager
 					if (fl.Name.IndexOf (bundleName) > -1 && fl.Name.Substring (0, fl.Name.LastIndexOf ('_')).Length == bundleName.Length) {
 						//找到开头一样，文件名开头长度一样的文件删掉
 						File.Delete (fl.FullName);
+						Debug.Log("删除文件"+fl.FullName);
 						filenameDict [bundleName] = bundleVersion;
 						break;
 					}
@@ -123,6 +123,8 @@ public class BundleManager
 		} else {
 			bundle.StartDownload (OnloadComplete, OnLoadProgress, OnLoadError);
 		}
+		
+		voManager.addBundle(bundle);
 	}
 
 	private void OnLoadError ()

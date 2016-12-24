@@ -30,6 +30,7 @@ public class BundleVo
 
 	public void StartDownload (OnLoadBundleComplete onCom_, OnLoadBundleProgress onProgress_, OnLoadBundleError onError_)
 	{
+		Debug.Log("开始进入下载阶段");
 		OnComplete += onCom_;
 		OnProgress += onProgress_;
 		OnError += onError_;

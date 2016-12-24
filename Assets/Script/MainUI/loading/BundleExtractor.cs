@@ -30,9 +30,14 @@ public class BundleExtractor : MonoBehaviour
         if (!Directory.Exists(LMVersion.ASSET_BUNDLE_PATH))
         {
             Directory.CreateDirectory(LMVersion.ASSET_BUNDLE_PATH);
-            //CopyToCache ();
+            CopyToCache ();
         }
-        CopyToCache();
+        else
+        {
+            Debug.Log("无需拷贝文件，直接进入");
+            // CopyToCache();
+            callBack();
+        }
     }
     private void callBack()
     {
@@ -70,7 +75,7 @@ public class BundleExtractor : MonoBehaviour
 
     private IEnumerator loadStreamUsingFile(string txtpath)
     {
-        string allFiles = System.IO.File.ReadAllText(txtpath + "v.txt");
+        string allFiles = System.IO.File.ReadAllText(txtpath + "/v.txt");
         string[] fileNames = allFiles.Split('\n');
         foreach (string fname in fileNames)
         {
