@@ -61,7 +61,7 @@ public class BundleManager
 				string size = ln.Substring (sizeCharIndex + 1, ln.Length - sizeCharIndex - 1);
 				Debug.Log ("需要更新的文件" + bundleName + "Size=" + size);
 				totalBytesToLoad += int.Parse (size);
-				Debug.Log (bundleName + "###" + bundleVersion + "###" + filenameDict [bundleName] + "###" + totalBytesToLoad);
+				// Debug.Log (bundleName + "###" + bundleVersion + "###" + filenameDict[bundleName] + "###" + totalBytesToLoad);
 			}
 		}
 		return totalBytesToLoad;
@@ -104,6 +104,7 @@ public class BundleManager
 			if (filenameDict [bundleName].Equals (bundleVersion)) 
 			{
 				bundle.isLoadFromFile = true;
+				OnloadComplete(bundle);
 			} else {
 				string filepath = LMVersion.ASSET_BUNDLE_PATH + "_" + filenameDict [bundleName];
 				DirectoryInfo dirinfo = new DirectoryInfo (LMVersion.ASSET_BUNDLE_PATH);

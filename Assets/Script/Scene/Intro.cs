@@ -54,6 +54,45 @@ public class Intro : MonoBehaviour
 
     }
 
+    void FixedUpdate()
+    {
+        float asyncProgress;
+        float bundlePercent=0f;
+        if(async == null)
+        {
+            asyncProgress=0f;
+        }else{
+            #if HOT
+            bundlePercent=BundleManager.getIns().GetLoadPercent();
+            #else
+            bundlePercent=1.0f;
+            #endif
+            asyncProgress=async.progress;
+        }
+
+        float realPercent;
+        if(totalMtoLoad >0){
+            realPercent = Mathf.Min(asyncProgress+0.1f,Mathf.Min(bundlePercent,bundleExtractor.percent))*100f;
+        }else{
+            realPercent=(asyncProgress+0.1f+bundlePercent+bundleExtractor.percent)*33.34f;
+        }
+        label.text="下载进度:" + ((realPercent/100f)*(totalMtoLoad/(float)1024)) .ToString("f1") +"M/"+(totalMtoLoad/(float)1024).ToString("f1")+"M";
+        slider.value=realPercent/100;
+
+        #if HOT
+        if(bundlePercent<1.0f)
+        {return;}
+        #endif
+
+        if(realPercent>99 && async!=null)
+        {
+            async.allowSceneActivation=true;
+        }
+    
+
+
+    }
+
     private void GoRequestXML()
     {
         StartCoroutine(RequestXml());
